@@ -1,0 +1,14 @@
+{
+    "builtin": "False",
+    "default_enabled": "True",
+    "type": "extension",
+    "rocket_mode_compatible": "False",
+    "name": "EVOTools",
+    "description": "EVO fire protection tools for pyrevit",
+    "author": "Jose Luis Perez",
+    "author_profile": "https://github.com/Luis9403",
+    "url": "https://github.com/Luis9403/EVOTools.extension.git",
+    "website": "https://github.com/Luis9403",
+    "image": "",
+    "dependencies": []
+}
