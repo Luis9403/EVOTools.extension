@@ -32,7 +32,6 @@ def GetPipeDirectionVector(pipe):
     return direction_vector
 
 
-
 uidoc = __revit__.ActiveUIDocument
 doc = uidoc.Document
 selection = uidoc.Selection
