@@ -24,13 +24,21 @@ class PipeSelectionFilter(ISelectionFilter):
             return False
     
     def AllowReference(self, reference):
-        return True
+        return False
 
-selection = uidoc.Selection
+
+def PipeSelection(uidocument, selection_filter, string):
+    try:
+        ref = uidocument.Selection.PickObject(ObjectType.Element, selection_filter, string)
+        return ref
+    except OperationCanceledException:
+        pass
+
+
 pipe_selection_filter = PipeSelectionFilter()
 trans = Transaction(doc, "Split Pipe by two points")
 
-pipe_ref = selection.PickObject(ObjectType.Element, pipe_selection_filter, "Pick Pipe")
+pipe_ref = PipeSelection(uidoc, pipe_selection_filter, "Select Pipe")
 
 pipe = doc.GetElement(pipe_ref.ElementId)
 pipe_reference_level = pipe.ReferenceLevel.Id
