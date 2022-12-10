@@ -8,6 +8,7 @@ from Autodesk.Revit.DB import *
 from Autodesk.Revit.UI import *
 from Autodesk.Revit.UI.Selection import *
 from Autodesk.Revit.DB.Plumbing import *
+from Autodesk.Revit.Exceptions import OperationCanceledException
 
 # set active document and document UI
 uidoc = __revit__.ActiveUIDocument
@@ -18,7 +19,7 @@ class PipeSelectionFilter(ISelectionFilter):
         pass
 
     def AllowElement(self, element):
-        if element.Cotegory.Name == "Pipes":
+        if element.Category.Name == "Pipes":
             return True
         else:
             return False
@@ -36,7 +37,7 @@ def PipeSelection(uidocument, selection_filter, string):
 
 
 pipe_selection_filter = PipeSelectionFilter()
-trans = Transaction(doc, "Split Pipe by two points")
+trans = Transaction(doc)
 
 pipe_ref = PipeSelection(uidoc, pipe_selection_filter, "Select Pipe")
 
@@ -47,10 +48,16 @@ connectors = pipe.ConnectorManager.Connectors
 
 linked_connectors = []
 for connector in connectors:
-    if connector.IsConnected():
-        linked_connector = connector.GetMEPConnectorInfo().LinkedConnector
-        linked_connectors.append(linked_connector)
+    if connector.IsConnected:
+        for con_connector in connector.AllRefs:
+            linked_connectors.append(con_connector)
     else:
         pass
 
-new_pipe = Pipe.Create(doc, pipe_type, pipe_reference_level, linked_connectors[0], linked_connectors[1])
+
+trans.Start("Regenerate Pipe")
+delete_pipe = doc.Delete(pipe_ref.ElementId)
+doc.Regenerate()
+new_pipe = Pipe.Create.Overloads[Document, ElementId, ElementId, Connector, Connector](doc, pipe_type, pipe_reference_level, linked_connectors[0], linked_connectors[1])
+doc.Regenerate()
+trans.Commit()
