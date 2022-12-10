@@ -24,7 +24,7 @@ class PipeSelectionFilter(ISelectionFilter):
             return False
     
     def AllowReference(self, reference):
-        return False
+        return True
 
 selection = uidoc.Selection
 pipe_selection_filter = PipeSelectionFilter()
