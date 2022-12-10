@@ -8,7 +8,7 @@ from Autodesk.Revit.DB import *
 from Autodesk.Revit.UI import *
 from Autodesk.Revit.UI.Selection import *
 from Autodesk.Revit.DB.Plumbing import *
-from Autodesk.Revit.Exceptions import OperationCanceledException
+from Autodesk.Revit.Exceptions import *
 
 # set active document and document UI
 uidoc = __revit__.ActiveUIDocument
@@ -49,8 +49,10 @@ connectors = pipe.ConnectorManager.Connectors
 linked_connectors = []
 for connector in connectors:
     if connector.IsConnected:
-        for con_connector in connector.AllRefs:
-            linked_connectors.append(con_connector)
+        con_connectors = connector.AllRefs
+        for con_connector in con_connectors:
+            if con_connector.Owner.Id != connector.Owner.Id:
+                linked_connectors.append(con_connector)
     else:
         pass
 
