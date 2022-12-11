@@ -6,28 +6,16 @@ clr.AddReference("RevitAPIUI")
 from Autodesk.Revit.DB import Document, Transaction
 from Autodesk.Revit.DB.Plumbing import PlumbingUtils
 from Autodesk.Revit.UI import UIDocument
-from Autodesk.Revit.UI.Selection import Selection, ISelectionFilter, ObjectType
+from Autodesk.Revit.UI.Selection import Selection, ObjectType
 from Autodesk.Revit.Exceptions import OperationCanceledException
-
+from EVO.Selection import selection
 
 uidoc = __revit__.ActiveUIDocument
 doc = uidoc.Document
 trans = Transaction(doc)
 
-class PipeSelectionFilter(ISelectionFilter):
-    def __init__(self):
-        pass
-    
-    def AllowElement(self, element):
-        if element.Category.Name == "Pipes":
-            return True
-        else:
-            return False
 
-    def AllowReference(self, reference):
-        return False
-
-pipe_selection_filter = PipeSelectionFilter()
+pipe_selection_filter = selection.CategorySelectionFilter("Pipes")
 
 def BreakPipeOnSelectedPoint(uidocument, SelectionFilter):
     try:
