@@ -1,5 +1,4 @@
 import clr
-import math
 
 clr.AddReference("RevitAPI")
 clr.AddReference("RevitAPIUI")
@@ -9,23 +8,11 @@ from Autodesk.Revit.UI import *
 from Autodesk.Revit.UI.Selection import *
 from Autodesk.Revit.DB.Plumbing import *
 from Autodesk.Revit.Exceptions import *
+from EVO.Selection.selection import CategorySelectionFilter
 
 # set active document and document UI
 uidoc = __revit__.ActiveUIDocument
 doc = __revit__.ActiveUIDocument.Document
-
-class PipeSelectionFilter(ISelectionFilter):
-    def __init__(self):
-        pass
-
-    def AllowElement(self, element):
-        if element.Category.Name == "Pipes":
-            return True
-        else:
-            return False
-    
-    def AllowReference(self, reference):
-        return False
 
 
 def PipeSelection(uidocument, selection_filter, string):
@@ -36,7 +23,7 @@ def PipeSelection(uidocument, selection_filter, string):
         pass
 
 
-pipe_selection_filter = PipeSelectionFilter()
+pipe_selection_filter = CategorySelectionFilter("Pipes")
 trans = Transaction(doc)
 
 pipe_ref = PipeSelection(uidoc, pipe_selection_filter, "Select Pipe")
